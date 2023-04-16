@@ -94,6 +94,7 @@ Using a question mark and a colon together in a group `(?:)` will match but not 
 ##### named capture groups
 
 With the use of a question mark and a given name the regex `/(?<name>x)/` will match x and store it in the `match.group.name` to be referenced
+- whatever is inbetween the `< >` will be stored as the name, so `/,\s(?<firstName>\w)/` will match the word after a comma and space if we have a list of names formatted as lastName, firstName and store it in `match.group.firstName`
 
 ##### Back References
 
@@ -170,7 +171,7 @@ The multiline flag `//m` will allow the anchors `^` and `$` to match newline cha
 The `//s` flag allows the character class dot metacharacter `.` to match newline characters
 
 The unicode flag `//u` allows for the use of Unicode related features such as unicode point escapes which are showed later
-- `/\u{65}\u{64}\u{69}\u{75}/u` would match `edit` but without the unicode flag `/\u{65}\u{64}\u{69}\u{75}/` would match u 65 times then u 64 times then u 69 times then u 75 times for a total of 273 "u"'s in a row
+- `/\u{65}\u{64}\u{69}\u{74}/u` would match `edit` but without the unicode flag `/\u{65}\u{64}\u{69}\u{74}/` would match u 65 times then u 64 times then u 69 times then u 74 times for a total of 272 "u"'s in a row or more likely return null
 - It's very useful for when you use any unicode characters such as `/\u{00f1}/u` which will match `ñ`
 
 The 'sticky' flag `//y`. This flag used with a regex will only attempt to match the target string from the last index that was matched and doesn't attempt to match more than once
@@ -180,24 +181,37 @@ The 'sticky' flag `//y`. This flag used with a regex will only attempt to match 
 The backslash before a character will be used as an escape if you want to match any of the special characters
 - `/\$/` will match any instance of $
 
-There are special escapes which use a backslash and literal character to 
+There are special escapes which use a backslash and literal character to provide extra functionality as listed below
 
 ##### Reserved Escapes
 
 `\w` will match words
+- anything that is a latin character or digits will be considered a word
+- can be replaced by `[a-zA-Z0-9_]`
 `\W` will match not words
+- will match spaces, non-latin characters, dots and other unicode characters
+- can be replaced by `[^a-zA-Z0-9_]`
 `\d` will match digits
+- equivalent to `[0-9]`
 `\D` will match not digits
+- equivalent to `[^0-9]`
 `\b` will match a word boundary
+- will check if it is a begining of a string and can match `/\w/`
+- will check between two characters where one is `/\w/` and the other is `/\W/`
+- `/\b/` will not work for non-latin alphabets
 `\B` will match not a word boundary
 `\v` will match a vertical tab character
 `\f` will match a form feed character
 `\0` will match a null character
 `\r` will match a carriage return or line skip
 `\s` will match a single whitespace character
+- equivalent to `[ \n\r\t\v]`
 `\S` will match a single non-whitespace character
 `\x00 - \xFF` will match a hexidecimal character
-`\x{0000} - \x{FFFF}` will match unicode code point
+`\u{0000} - \u{FFFF}` will match unicode code point only when the unicode flag is included
+`\p{property}` will match unicode property escapes specified by property when the unicode flag is included
+- There are many many properties some of which can be viewed on the [Unicode Website](https://unicode.org/reports/tr18/#General_Category_Property) or on this [ECMAScript website](https://tc39.es/ecma262/multipage/text-processing.html#table-binary-unicode-properties)
+`\P{property}` will match anything that isn't the unicode property escape given when the unicode flag is included
 
 ## Author
 
